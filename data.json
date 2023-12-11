@@ -1,0 +1,90 @@
+{
+    "name": "test",
+    "place": "paris",
+    "date": "06/11/2023",
+    "id": "b37b87ea-2281-4426-8d7f-7f8906f623cd",
+    "players": [
+        {
+            "lastName": "test",
+            "firstName": "test",
+            "dateOfBirth": "09/10/2000",
+            "id": "YU458574"
+        },
+        {
+            "lastName": "test2",
+            "firstName": "test2",
+            "dateOfBirth": "08/12/1985",
+            "id": "GF476219"
+        },
+        {
+            "lastName": "test3",
+            "firstName": "test3",
+            "dateOfBirth": "04/05/1998",
+            "id": "VG453186"
+        },
+        {
+            "lastName": "test4",
+            "firstName": "test4",
+            "dateOfBirth": "06/08/2000",
+            "id": "ML4982174"
+        }
+    ],
+    "rounds": {
+        "1": [
+            {
+                "player1": "VG453186",
+                "player2": "GF476219",
+                "winner": "VG453186",
+                "draw": false
+            },
+            {
+                "player1": "YU458574",
+                "player2": "ML4982174",
+                "winner": "ML4982174",
+                "draw": false
+            }
+        ],
+        "2": [
+            {
+                "player1": "VG453186",
+                "player2": "ML4982174",
+                "winner": null,
+                "draw": true
+            },
+            {
+                "player1": "GF476219",
+                "player2": "YU458574",
+                "winner": "GF476219",
+                "draw": false
+            }
+        ],
+        "3": [
+            {
+                "player1": "VG453186",
+                "player2": "ML4982174",
+                "winner": "ML4982174",
+                "draw": false
+            },
+            {
+                "player1": "GF476219",
+                "player2": "YU458574",
+                "winner": null,
+                "draw": true
+            }
+        ],
+        "4": [
+            {
+                "player1": "ML4982174",
+                "player2": "VG453186",
+                "winner": "ML4982174",
+                "draw": false
+            },
+            {
+                "player1": "GF476219",
+                "player2": "YU458574",
+                "winner": "GF476219",
+                "draw": false
+            }
+        ]
+    }
+}
