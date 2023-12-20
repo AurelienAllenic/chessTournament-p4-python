@@ -162,7 +162,20 @@ class Tournament:
         }
 
     def addDirectorRecommendations(self, recommendations):
-        self.directorRecommendations = recommendations
+        self.directorRecommendations += recommendations
+
+    @staticmethod
+    def updateDirectorRecommendations(tournament, filePath):
+        with open(filePath, 'r+') as file:
+            data = json.load(file)
+            for t in data["tournaments"]:
+                if t["id"] == tournament.tournamentId:
+                    t["directorRecommendations"] = \
+                        tournament.directorRecommendations
+                    break
+            file.seek(0)
+            file.truncate()
+            json.dump(data, file, indent=4)
 
 
 # Functions for JSON file handling

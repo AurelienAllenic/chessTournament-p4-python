@@ -54,7 +54,6 @@ def createTournament():
         # Mise à jour de l'état du tournoi
         for match in round_results:
             tournament.playedMatches.add((match['player1'], match['player2']))
-        model.saveTournamentInfo(tournament, filePath)
 
     # Affichage du classement final
     view.displayFinalRanking(tournament.players)
@@ -62,7 +61,8 @@ def createTournament():
     # Récupération et enregistrement des recommandations du directeur
     director_recommendations = view.getDirectorRecommendations()
     tournament.addDirectorRecommendations(director_recommendations)
-    model.saveTournamentInfo(tournament, filePath)
+
+    model.Tournament.updateDirectorRecommendations(tournament, filePath)
 
 
 # Exécution du contrôleur
