@@ -200,24 +200,48 @@ def saveTournamentResults(tournament, roundNumber, roundResults, filePath):
 def saveTournamentInfo(tournament, filePath):
     with open(filePath, 'r+') as file:
         data = json.load(file)
-        tournament_data = {
-            "name": tournament.name,
-            "place": tournament.place,
-            "date": tournament.date,
-            "id": tournament.tournamentId,
-            "players": [
-                        {
-                            "lastName": player.lastName,
-                            "firstName": player.firstName,
-                            "dateOfBirth": player.dateOfBirth,
-                            "id": player.id
-                        }
-                        for player in tournament.players
-                        ],
-            "rounds": {},
-            "directorRecommendations": tournament.directorRecommendations
-        }
-        data["tournaments"].append(tournament_data)
+
+        # Vérifier si le tournoi existe déjà
+        existing_tournament = next((t for t in data["tournaments"] if t["id"] == tournament.tournamentId), None)
+        if existing_tournament is None:
+            # Ajouter le nouveau tournoi si ce n'est pas un doublon
+            tournament_data = {
+                "name": tournament.name,
+                "place": tournament.place,
+                "date": tournament.date,
+                "id": tournament.tournamentId,
+                "players": [
+                    {
+                        "lastName": player.lastName,
+                        "firstName": player.firstName,
+                        "dateOfBirth": player.dateOfBirth,
+                        "id": player.id
+                    }
+                    for player in tournament.players
+                ],
+                "rounds": {},
+                "directorRecommendations": tournament.directorRecommendations
+            }
+            data["tournaments"].append(tournament_data)
+        else:
+            # Mettre à jour le tournoi existant
+            existing_tournament.update({
+                "name": tournament.name,
+                "place": tournament.place,
+                "date": tournament.date,
+                "players": [
+                    {
+                        "lastName": player.lastName,
+                        "firstName": player.firstName,
+                        "dateOfBirth": player.dateOfBirth,
+                        "id": player.id
+                    }
+                    for player in tournament.players
+                ],
+                "directorRecommendations": tournament.directorRecommendations
+            })
+
+        # Écrire les données mises à jour dans le fichier
         file.seek(0)
         file.truncate()
         json.dump(data, file, indent=4)

@@ -1,9 +1,16 @@
 # first details about tournament
-def getTournamentDetails():
+
+def getTournamentName():
     name = input("Enter the tournament name: ")
+    return name
+
+def getTournamentPlace():
     place = input("Enter the tournament place: ")
+    return place
+
+def getTournamentDate():
     date = input("Enter the tournament date (DD/MM/YYYY): ")
-    return name, place, date
+    return date
 
 
 # number of players
