@@ -86,3 +86,20 @@ def displayRound(roundNumber):
 # Director's recommandations
 def getDirectorRecommendations():
     return input("Director's recommandations: ")
+
+def askUserToLoadExistingTournament():
+    while True:
+        response = input("Voulez-vous charger un tournoi existant ? (oui/non) : ").strip().lower()
+        if response in ["oui", "non"]:
+            return response == "oui"
+        else:
+            print("Réponse non valide. Veuillez répondre par 'oui' ou 'non'.")
+
+def askUserForTournamentId():
+    return input("Veuillez entrer l'ID du tournoi à charger : ").strip()
+
+def displayExistingTournaments(tournaments):
+    print("Tournois existants :")
+    for t in tournaments:
+        print(f"ID: {t['id']}, Nom: {t['name']}, Lieu: {t['place']}, Date: {t['date']}")
+
