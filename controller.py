@@ -1,8 +1,6 @@
 import model
 import view
-import uuid
-import math
-import json
+
 
 def createTournament():
     filePath = 'data.json'
@@ -16,10 +14,14 @@ def createTournament():
         tournamentId = view.askUserForTournamentId()
         numberOfPlayers = view.getNumberOfPlayers()
         numberOfRounds = view.getNumberOfRounds()
-        tournament = model.load_or_create_tournament(tournamentId, filePath, numberOfPlayers, numberOfRounds)
+        tournament = model.load_or_create_tournament(
+            tournamentId, filePath, numberOfPlayers, numberOfRounds
+        )
+
     else:
         tournament = model.create_new_tournament(filePath)
 
     model.finalize_tournament(tournament, filePath)
+
 
 createTournament()

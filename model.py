@@ -29,13 +29,18 @@ class Player:
             "dateOfBirth": self.dateOfBirth,
             "points": self.points
         }
-    
+
     def to_dict(self):
         return vars(self)
 
     @staticmethod
     def from_dict(data):
-        player = Player(data['lastName'], data['firstName'], data['dateOfBirth'], data['id'])
+        player = Player(
+            data['lastName'],
+            data['firstName'],
+            data['dateOfBirth'],
+            data['id']
+        )
         if 'points' in data:
             player.points = data['points']
         if 'matchesPlayed' in data:
@@ -43,6 +48,7 @@ class Player:
         if 'exemptions' in data:
             player.exemptions = data['exemptions']
         return player
+
 
 # Round class
 class Round:
@@ -188,7 +194,12 @@ class Tournament:
 
     @staticmethod
     def from_dict(data):
-        tournament = Tournament(data['name'], data['place'], data['date'], data['tournamentId'])
+        tournament = Tournament(
+            data['name'],
+            data['place'],
+            data['date'],
+            data['tournamentId']
+        )
         tournament.players = [Player.from_dict(p) for p in data['players']]
         all_players = {player.id: player for player in tournament.players}
 
@@ -206,10 +217,14 @@ class Tournament:
                     all_players[match['player1']].add_points(0.5)
                     all_players[match['player2']].add_points(0.5)
 
-        tournament.rounds = [Round.from_dict(r, all_players) for r in data.get('rounds', [])]
+        tournament.rounds = [
+            Round.from_dict(round_data, all_players)
+            for round_data in data.get('rounds', [])
+        ]
 
         if 'directorRecommendations' in data:
-            tournament.directorRecommendations = data['directorRecommendations']
+            recommendations = data['directorRecommendations']
+            tournament.directorRecommendations = recommendations
 
         return tournament
 
@@ -266,7 +281,12 @@ def save_tournament_info(tournament, filePath):
         data = json.load(file)
 
         # Vérifier si le tournoi existe déjà
-        existing_tournament = next((t for t in data["tournaments"] if t["tournamentId"] == tournament.tournamentId), None)
+        tournament_gen = (
+                t for t in data["tournaments"]
+                if t["tournamentId"] == tournament.tournamentId
+            )
+        existing_tournament = next(tournament_gen, None)
+
         if existing_tournament is None:
             # Ajouter le nouveau tournoi si ce n'est pas un doublon
             tournament_data = {
@@ -310,12 +330,21 @@ def save_tournament_info(tournament, filePath):
         file.truncate()
         json.dump(data, file, indent=4)
 
+
 def save_tournament(tournament, filePath):
     with open(filePath, 'r+') as file:
         data = json.load(file)
 
         # Trouver le tournoi existant
-        existing_tournament = next((t for t in data["tournaments"] if t["tournamentId"] == tournament.tournamentId), None)
+        # Création du générateur
+        tournament_gen = (
+            t for t in data["tournaments"]
+            if t["tournamentId"] == tournament.tournamentId
+        )
+
+        # Récupération du tournoi existant
+        existing_tournament = next(tournament_gen, None)
+
         if existing_tournament:
             # Mettre à jour le tournoi existant
             existing_tournament.update(tournament.to_dict())
@@ -337,15 +366,23 @@ def load_tournament(tournamentId, filePath, numberOfPlayers, numberOfRounds):
         for t in data.get("tournaments", []):
             if t.get("tournamentId") == tournamentId:
                 tournament = Tournament.from_dict(t)
-                if not tournament.name or not tournament.place or not tournament.date or len(tournament.players) < numberOfPlayers:
+                conditions_not_met = (
+                    not tournament.name
+                    or not tournament.place
+                    or not tournament.date
+                    or len(tournament.players) < numberOfPlayers
+                )
+
+                if conditions_not_met:
                     complete_tournament_info(tournament, numberOfPlayers)
                 return tournament
 
         print(f"Tournoi avec ID {tournamentId} non trouvé dans le fichier.")
         return None
-    
-def playRound(tournament, round_number):
-    view.displayRound(round_number)
+
+
+def playRound(tournament, round_num):
+    view.displayRound(round_num)
     round = Round(tournament.players, tournament.playedMatches)
     round.generate_matches(tournament)
     round_results = round.play_matches(tournament)
@@ -354,7 +391,8 @@ def playRound(tournament, round_number):
         tournament.playedMatches.add((match['player1'], match['player2']))
 
     # Enregistrer les résultats du round
-    save_tournament_results(tournament, round_number, round_results, 'data.json')
+    save_tournament_results(tournament, round_num, round_results, 'data.json')
+
 
 def complete_tournament_info(tournament, numberOfPlayers):
     # Compléter les informations manquantes du tournoi
@@ -371,6 +409,7 @@ def complete_tournament_info(tournament, numberOfPlayers):
         tournament.players.append(new_player)
 
     save_tournament_info(tournament, 'data.json')
+
 
 def list_tournaments(filePath):
     if not os.path.exists(filePath):
@@ -391,18 +430,20 @@ def list_tournaments(filePath):
 
         return tournament_list
 
-def load_or_create_tournament(tournamentId, filePath, numberOfPlayers, numberOfRounds):
-    tournament = load_tournament(tournamentId, filePath, numberOfPlayers, numberOfRounds)
+
+def load_or_create_tournament(id, filePath, numberOfPlayers, numberOfRnds):
+    tournament = load_tournament(id, filePath, numberOfPlayers, numberOfRnds)
     print('director : ', tournament.directorRecommendations)
     if tournament:
-        # Compléter les informations manquantes et jouer les rounds manquants si nécessaire
+        # Compléter les infos manquantes et jouer les rounds manquants
         complete_tournament_info(tournament, numberOfPlayers)
-        play_rounds(tournament, numberOfRounds, filePath)
+        play_rounds(tournament, numberOfRnds, filePath)
     else:
         # Créer un nouveau tournoi si le tournoi spécifié n'existe pas
         tournament = create_new_tournament(filePath)
 
     return tournament
+
 
 def create_new_tournament(filePath):
     tournamentId = str(uuid.uuid4())
@@ -423,15 +464,16 @@ def create_new_tournament(filePath):
         save_tournament_info(tournament, filePath)
 
     numberOfRounds = view.getNumberOfRounds()
-    tournament.maxExemptions = math.ceil(numberOfRounds / len(tournament.players))
-    
+    exemption_ratio = numberOfRounds / len(tournament.players)
+    tournament.maxExemptions = math.ceil(exemption_ratio)
+
     save_tournament_info(tournament, filePath)
     play_rounds(tournament, numberOfRounds, filePath)
 
     return tournament
 
-def play_rounds(tournament, numberOfRounds, filePath):
-    print('es-tu appelé ?')
+
+def play_rounds(tournament, numberOfRounds, fileP):
     for round_number in range(len(tournament.rounds) + 1, numberOfRounds + 1):
         view.displayRound(round_number)
         round = Round(tournament.players, tournament.playedMatches)
@@ -439,21 +481,25 @@ def play_rounds(tournament, numberOfRounds, filePath):
         round_results = round.play_matches(tournament)
         for match in round_results:
             tournament.playedMatches.add((match['player1'], match['player2']))
-        save_tournament_results(tournament, round_number, round_results, filePath)
-        save_tournament_info(tournament, filePath)
+        save_tournament_results(tournament, round_number, round_results, fileP)
+        save_tournament_info(tournament, fileP)
+
 
 def finalize_tournament(tournament, filePath):
     view.displayFinalRanking(tournament.players)
 
     # Charger les données du tournoi depuis le fichier JSON
     tournament_data = load_tournament_data(filePath, tournament.tournamentId)
-    
-    # Vérifier si les recommandations du directeur existent dans le JSON
-    existing_director_recommendations = tournament_data.get('directorRecommendations') if tournament_data else ''
 
-    # Si les recommandations sont déjà présentes, les utiliser, sinon les demander
-    if existing_director_recommendations:
-        print(f"Current director recommendations: {existing_director_recommendations}")
+    # Vérifier si les recommandations du directeur existent dans le JSON
+    if tournament_data:
+        existing_director = tournament_data.get('directorRecommendations')
+    else:
+        existing_director = ''
+
+    # Si les recos sont présentes, les utiliser, sinon les demander
+    if existing_director:
+        print(f"Current director recommendations: {existing_director}")
     else:
         print('Director recommendations needed.')
         new_director_recommendations = view.getDirectorRecommendations()

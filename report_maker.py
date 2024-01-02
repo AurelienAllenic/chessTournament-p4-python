@@ -1,8 +1,10 @@
 import json
 
+
 def load_data(file_path):
     with open(file_path, 'r') as file:
         return json.load(file)
+
 
 def write_players_alphabetically(data, file):
     player_names = set()
@@ -13,9 +15,11 @@ def write_players_alphabetically(data, file):
     for name in sorted(player_names):
         file.write(name + '\n')
 
+
 def write_tournaments(data, file):
     for tournament in data["tournaments"]:
         file.write(f"{tournament['name']} - Date: {tournament['date']}\n")
+
 
 def write_tournament_details(data, tournament_id, file):
     for tournament in data["tournaments"]:
@@ -25,13 +29,18 @@ def write_tournament_details(data, tournament_id, file):
             file.write(f"Place: {tournament['place']}\n")
             break
 
+
 def write_players_in_tournament_alphabetically(data, tournament_id, file):
     for tournament in data["tournaments"]:
         if tournament['id'] == tournament_id:
-            player_names = [f"{p['firstName']} {p['lastName']}" for p in tournament["players"]]
+            player_names = [
+                f"{p['firstName']} {p['lastName']}"
+                for p in tournament["players"]
+            ]
             for name in sorted(player_names):
                 file.write(name + '\n')
             break
+
 
 def write_tournament_rounds_and_matches(data, tournament_id, file):
     for tournament in data["tournaments"]:
@@ -40,8 +49,13 @@ def write_tournament_rounds_and_matches(data, tournament_id, file):
             for round_number, matches in tournament["rounds"].items():
                 file.write(f"  Round {round_number}:\n")
                 for match in matches:
-                    file.write(f"    {match['player1']} vs {match['player2']}, Winner: {match['winner']}\n")
+                    player1 = match['player1']
+                    player2 = match['player2']
+                    winner = match['winner']
+                    match_info = f"{player1} vs {player2}, Winner: {winner}\n"
+                    file.write(match_info)
             break
+
 
 def generate_report(data, report_file_path):
     with open(report_file_path, 'w') as file:
@@ -59,6 +73,7 @@ def generate_report(data, report_file_path):
 
         file.write("\nTournament Rounds and Matches:\n")
         write_tournament_rounds_and_matches(data, tournament_id, file)
+
 
 data = load_data('./data.json')
 generate_report(data, './tournament_report.txt')

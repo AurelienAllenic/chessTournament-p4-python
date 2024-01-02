@@ -4,9 +4,11 @@ def getTournamentName():
     name = input("Enter the tournament name: ")
     return name
 
+
 def getTournamentPlace():
     place = input("Enter the tournament place: ")
     return place
+
 
 def getTournamentDate():
     date = input("Enter the tournament date (DD/MM/YYYY): ")
@@ -87,19 +89,28 @@ def displayRound(roundNumber):
 def getDirectorRecommendations():
     return input("Director's recommandations: ")
 
+
 def askUserToLoadExistingTournament():
     while True:
-        response = input("Voulez-vous charger un tournoi existant ? (oui/non) : ").strip().lower()
+        prompt = "Voulez-vous charger un tournoi existant ? (oui/non) : "
+        response = input(prompt).strip().lower()
         if response in ["oui", "non"]:
             return response == "oui"
         else:
-            print("Réponse non valide. Veuillez répondre par 'oui' ou 'non'.")
+            print("Réponse non valide. Répondez 'oui' ou 'non'.")
+
 
 def askUserForTournamentId():
     return input("Veuillez entrer l'ID du tournoi à charger : ").strip()
 
+
 def displayExistingTournaments(tournaments):
     print("Tournois existants :")
     for t in tournaments:
-        print(f"ID: {t['id']}, Nom: {t['name']}, Lieu: {t['place']}, Date: {t['date']}")
-
+        tournament_info = (
+            f"ID: {t['id']}, "
+            f"Nom: {t['name']}, "
+            f"Lieu: {t['place']}, "
+            f"Date: {t['date']}"
+        )
+        print(tournament_info)
