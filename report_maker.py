@@ -23,7 +23,7 @@ def write_tournaments(data, file):
 
 def write_tournament_details(data, tournament_id, file):
     for tournament in data["tournaments"]:
-        if tournament['id'] == tournament_id:
+        if tournament['tournamentId'] == tournament_id:
             file.write(f"\nDetails for Tournament: {tournament['name']}\n")
             file.write(f"Date: {tournament['date']}\n")
             file.write(f"Place: {tournament['place']}\n")
@@ -32,7 +32,7 @@ def write_tournament_details(data, tournament_id, file):
 
 def write_players_in_tournament_alphabetically(data, tournament_id, file):
     for tournament in data["tournaments"]:
-        if tournament['id'] == tournament_id:
+        if tournament['tournamentId'] == tournament_id:
             player_names = [
                 f"{p['firstName']} {p['lastName']}"
                 for p in tournament["players"]
@@ -44,7 +44,7 @@ def write_players_in_tournament_alphabetically(data, tournament_id, file):
 
 def write_tournament_rounds_and_matches(data, tournament_id, file):
     for tournament in data["tournaments"]:
-        if tournament['id'] == tournament_id:
+        if tournament['tournamentId'] == tournament_id:
             file.write(f"\nRounds and Matches for {tournament['name']}:\n")
             for round_number, matches in tournament["rounds"].items():
                 file.write(f"  Round {round_number}:\n")
@@ -65,7 +65,7 @@ def generate_report(data, report_file_path):
         file.write("\nTournament Names:\n")
         write_tournaments(data, file)
 
-        tournament_id = 'f25e7d97-5440-44cf-9f45-bf5e2167c1ef'  # Exemple d'ID
+        tournament_id = '894500b1-8f65-4726-9a22-3deb37e599ac'  # Exemple d'ID
         write_tournament_details(data, tournament_id, file)
 
         file.write("\nPlayers in Tournament (Alphabetically):\n")
