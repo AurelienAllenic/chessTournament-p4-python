@@ -55,5 +55,16 @@ model.py : fichier contenant les différentes class de mon application.
 view.py : fichier d'affichages de vues, de messages et d'input destinés à l'utilisateur.
 requirements.txt : Fichier contenant les dépendances nécessaires.
 
+## Générer un fichier flake8-html
+
+Pour installer fleke8 et flake8-html, exécutez les commandes suivantes:
+
+pip install flake8
+pip install flake8-html
+
+Pour générer un rapport complet au format HTML, exécutez la commande suivante en remplaçant votre_projet par le dossier contenant le projet:
+
+flake8 --format=html --htmldir=rapport_flake8 votre_projet/
+
 ## Licence
 Ce projet est sous licence MIT. Voir le fichier LICENSE pour plus de détails.
