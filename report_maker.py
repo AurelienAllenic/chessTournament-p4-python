@@ -65,7 +65,7 @@ def generate_report(data, report_file_path):
         file.write("\nTournament Names:\n")
         write_tournaments(data, file)
 
-        tournament_id = '894500b1-8f65-4726-9a22-3deb37e599ac'  # Exemple d'ID
+        tournament_id = '3540fa6d-c130-40b4-87f5-a3db58c25c7e'  # Exemple d'ID
         write_tournament_details(data, tournament_id, file)
 
         file.write("\nPlayers in Tournament (Alphabetically):\n")
